@@ -6,4 +6,8 @@
   --font-outfit: 'Outfit', sans-serif;
   --font-playfair: 'Playfair', serif;
   --color-primary: #2563EB;
+  --color-secondary: #FBBF24;
+}
+*{
+  font-family: 'Outfit', sans-serif;
 }
