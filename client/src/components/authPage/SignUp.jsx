@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { KeyRound, Mail, UserRoundPen } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { AuthContext } from "../../context/AuthContext";
@@ -10,7 +10,7 @@ import LoadingAnimation from "../ui/LoadingAnimation";
 
 const SignUp = () => {
       const navigate = useNavigate();
-      const { Backend_URL } = useContext(AuthContext);
+      const { Backend_URL,isLoading, isLoggedIn, userData } = useContext(AuthContext);
       const { pushToast } = useContext(ToastContext);
       const [loading, setLoading] = useState(false);
       const [fullName, setFullName] = useState("");
@@ -115,6 +115,12 @@ const SignUp = () => {
                   }
             }
       };
+      useEffect(() => {
+            if (userData) {
+                  navigate("/");
+                  return;
+            }
+      }, [isLoading, isLoggedIn, userData, navigate, pushToast]);
       return (
             <div className="bg-[url('/src/assets/img/HeroImage.jpg')] bg-cover bg-center">
                   <div className="flex flex-col items-center justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white font-outfit h-screen w-screen bg-black/50">

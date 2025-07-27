@@ -10,6 +10,8 @@ import UserInfo from './components/userPage/UserInfo';
 import VerifyEmail from './components/authPage/VerifyEmail';
 import { ToastContext } from './context/ToastContext';
 import Error from './pages/Error';
+import Hotels from './pages/Hotels';
+import Footer from './components/Footer';
 
 const App = () => {
   const isOwnerPath = useLocation().pathname.includes('/owner');
@@ -46,7 +48,7 @@ const App = () => {
     <NavBar/>
     }
     <Toaster richColors />
-    <div className='min-h-[70vh]'>
+    <div className='min-h-[70vh] overflow-x-hidden font-outfit'>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
@@ -55,11 +57,16 @@ const App = () => {
         <Route path='/user/profile' element={<UserInfo />} />
         <Route path='/verify' element={<VerifyEmail />} />
         <Route path='/404' element={<Error />} />
+        <Route path='/rooms' element={<Hotels />} />
         
 
       </Routes>
 
     </div>
+    {
+      !isOwnerPath &&
+    <Footer/>
+    }
     
     </>
   )

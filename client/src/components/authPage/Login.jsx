@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { KeyRound, Mail } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
@@ -9,8 +9,15 @@ import { ToastContext } from "../../context/ToastContext";
 
 const Login = () => {
       const navigate = useNavigate();
-      const { Backend_URL, setIsLoggedIn, getUserData, setUserData } =
-            useContext(AuthContext);
+      const {
+            Backend_URL,
+            setIsLoggedIn,
+            getUserData,
+            setUserData,
+            isLoading,
+            isLoggedIn,
+            userData,
+      } = useContext(AuthContext);
       const { pushToast } = useContext(ToastContext);
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
@@ -131,6 +138,13 @@ const Login = () => {
                   }
             }
       };
+      useEffect(() => {     
+                  if (userData) {
+                        navigate("/");
+                        pushToast("Your are already Logged In", "success");
+                        return;
+                  }
+      }, [isLoading, isLoggedIn, userData, navigate, pushToast]);
       return (
             <div className="bg-[url('/src/assets/img/HeroImage.jpg')] bg-cover bg-center">
                   <div className="flex flex-col items-center justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white font-outfit h-screen w-screen bg-black/50">

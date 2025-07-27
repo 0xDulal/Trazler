@@ -7,13 +7,14 @@ import axios from "axios";
 import { ToastContext } from "../context/ToastContext";
 
 const NavBar = () => {
-      const isUserPath = useLocation().pathname.includes('/user');
+      const isUserPath = useLocation().pathname.includes("/user" )
+
       const { userData, setIsLoggedIn, Backend_URL, setUserData } =
             useContext(AuthContext);
       const { pushToast } = useContext(ToastContext);
       const navLinks = [
             { name: "Home", path: "/" },
-            { name: "Hotels", path: "/" },
+            { name: "Hotels", path: "/rooms" },
             { name: "Experiance", path: "/" },
             { name: "About", path: "/" },
       ];
@@ -27,7 +28,10 @@ const NavBar = () => {
                         `${Backend_URL}/api/auth/send-verification-email`
                   );
                   if (data.success) {
-                        pushToast("Verification email sent successfully!", "success");
+                        pushToast(
+                              "Verification email sent successfully!",
+                              "success"
+                        );
                   } else {
                         pushToast("Failed to send verification email", "error");
                   }
@@ -60,13 +64,17 @@ const NavBar = () => {
             return () => window.removeEventListener("scroll", handleScroll);
       }, []);
 
+      const isHomePage = useLocation().pathname === "/";
+
       return (
             <nav
-                  className={`fixed top-0 left-0  w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
-                        isScrolled
-                              ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
-                              : "py-4 md:py-6"
-                  } ${isUserPath ? "bg-indigo-900" : ""}`}
+                  className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
+                        isUserPath
+                              ? "bg-indigo-900"
+                              : isHomePage && !isScrolled
+                              ? "bg-transparent"
+                              : "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
+                  } ${!isUserPath && !isScrolled ? "py-4 md:py-6" : ""}`}
             >
                   {/* Logo */}
                   <Link to={"/"}>
@@ -75,7 +83,7 @@ const NavBar = () => {
                               alt="logo"
                               className={`h-9 ${
                                     isScrolled && "invert opacity-80"
-                              }`}
+                              } ${!isHomePage && "invert"}`}
                         />
                   </Link>
 
@@ -87,9 +95,9 @@ const NavBar = () => {
                                     href={link.path}
                                     className={`group flex flex-col gap-0.5 ${
                                           isScrolled
-                                                ? "text-gray-700"
-                                                : "text-white"
-                                    }`}
+                                                ? "text-gray-950"
+                                                : ""
+                                    } ${isHomePage ? "text-white" : "text-gray-950"} `}
                               >
                                     {link.name}
                                     <div
@@ -154,9 +162,7 @@ const NavBar = () => {
                               <button
                                     onClick={() => navigate("/login")}
                                     className={`px-8 py-2.5 rounded-full transition-all duration-500 cursor-pointer ${
-                                          isScrolled
-                                                ? "text-black bg-white"
-                                                : "text-white bg-black"
+                                          isScrolled ? "text-white bg-black" : "text-black bg-white"
                                     }`}
                               >
                                     Login
