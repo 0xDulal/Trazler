@@ -1,25 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import WhiteLogo from "../assets/logoWhite.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BookKey, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { ToastContext } from "../context/ToastContext";
 
 const NavBar = () => {
-      const isUserPath = useLocation().pathname.includes("/user" )
-
       const { userData, setIsLoggedIn, Backend_URL, setUserData } =
             useContext(AuthContext);
       const { pushToast } = useContext(ToastContext);
       const navLinks = [
             { name: "Home", path: "/" },
             { name: "Hotels", path: "/rooms" },
-            { name: "Experiance", path: "/" },
+            { name: "Experience", path: "/" },
             { name: "About", path: "/" },
       ];
-      const [isScrolled, setIsScrolled] = React.useState(false);
-      const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+      const [isScrolled, setIsScrolled] = useState(false);
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
       const navigate = useNavigate();
       const sendVerificationEmail = async () => {
             try {
@@ -68,13 +66,11 @@ const NavBar = () => {
 
       return (
             <nav
-                  className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${
-                        isUserPath
-                              ? "bg-indigo-900"
-                              : isHomePage && !isScrolled
-                              ? "bg-transparent"
-                              : "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4"
-                  } ${!isUserPath && !isScrolled ? "py-4 md:py-6" : ""}`}
+                  className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 py-3 md:py-4 
+                  ${
+                        isHomePage ? (isScrolled ? "bg-white text-black" : "bg-transparent text-white") : "bg-white shadow-xl"
+                  }
+                  `}
             >
                   {/* Logo */}
                   <Link to={"/"}>
@@ -86,46 +82,45 @@ const NavBar = () => {
                               } ${!isHomePage && "invert"}`}
                         />
                   </Link>
-
                   {/* Desktop Nav */}
                   <div className="hidden md:flex items-center gap-4 lg:gap-8">
                         {navLinks.map((link, i) => (
-                              <a
+                              <Link
                                     key={i}
-                                    href={link.path}
-                                    className={`group flex flex-col gap-0.5 ${
-                                          isScrolled
-                                                ? "text-gray-950"
+                                    to={link.path}
+                                    className={`group flex flex-col gap-0.5 font-semibold ${
+                                          !isHomePage
+                                                ? "text-black"
+                                                : !isScrolled
+                                                ? "text-white"
                                                 : ""
-                                    } ${isHomePage ? "text-white" : "text-gray-950"} `}
+                                    }`}
                               >
                                     {link.name}
                                     <div
                                           className={`${
-                                                isScrolled
-                                                      ? "bg-gray-700"
-                                                      : "bg-white"
-                                          } h-0.5 w-0 group-hover:w-full transition-all duration-300`}
+                                                !isHomePage
+                                                      ? "bg-black"
+                                                      : !isScrolled
+                                                      ? "bg-white"
+                                                      : ""
+                                          } bg-gray-700 h-0.5 w-0 group-hover:w-full transition-all duration-300`}
                                     />
-                              </a>
+                              </Link>
                         ))}
-                        <button
-                              className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${
-                                    isScrolled ? "text-black" : "text-white"
-                              } transition-all`}
-                        >
-                              Dashboard
-                        </button>
                   </div>
-
-                  {/* Desktop Right */}
+                  {/* Search and User Profile */}
                   <div className="hidden md:flex items-center gap-4">
                         <Search
-                              color="#ffffff"
+                              color={
+                                    isHomePage
+                                          ? isScrolled
+                                                ? "#000000"
+                                                : "#ffffff"
+                                          : "#000000"
+                              }
                               strokeWidth={2.5}
-                              className={`${
-                                    isScrolled && "invert"
-                              } h-7 transition-all duration-500 font-white`}
+                              className="h-7 w-7"
                         />
                         {userData ? (
                               <div className="w-8 h-8 rounded-full flex justify-center items-center bg-black text-white relative group">
@@ -161,16 +156,20 @@ const NavBar = () => {
                         ) : (
                               <button
                                     onClick={() => navigate("/login")}
-                                    className={`px-8 py-2.5 rounded-full transition-all duration-500 cursor-pointer ${
-                                          isScrolled ? "text-white bg-black" : "text-black bg-white"
-                                    }`}
+                                    className={`px-8 py-2.5 rounded-full transition-all duration-500 cursor-pointer
+                                                                                ${
+                                                                                      isHomePage
+                                                                                            ? isScrolled
+                                                                                                  ? "bg-black text-white"
+                                                                                                  : "bg-white text-black"
+                                                                                            : "bg-black text-white"
+                                                                                }
+                                                                        `}
                               >
                                     Login
                               </button>
                         )}
                   </div>
-
-                  {/* Mobile Menu Button */}
                   <div className="flex items-center gap-3 md:hidden">
                         {isMenuOpen ? (
                               ""
@@ -184,7 +183,6 @@ const NavBar = () => {
                               />
                         )}
                   </div>
-
                   {/* Mobile Menu */}
                   <div
                         className={`fixed top-0 left-0 w-full h-screen bg-white/50 text-base flex flex-col md:hidden items-center justify-center gap-6 font-medium text-gray-800 transition-all duration-500 ${
@@ -199,18 +197,15 @@ const NavBar = () => {
                         </button>
 
                         {navLinks.map((link, i) => (
-                              <a
+                              <Link
                                     key={i}
-                                    href={link.path}
+                                    to={link.path}
                                     onClick={() => setIsMenuOpen(false)}
+                                    className="w-full text-center"
                               >
                                     {link.name}
-                              </a>
+                              </Link>
                         ))}
-
-                        <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                              Dashboard
-                        </button>
 
                         <button className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">
                               Login
