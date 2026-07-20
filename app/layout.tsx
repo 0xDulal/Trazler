@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Trazler",
+  title: "Trazler - Your Travel Partner",
   description: "Premium travel discovery and booking platform.",
 };
 
