@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
+/*
+ * Trazler design tokens.
+ * Brand palette is committed identity (see brand assets):
+ *   primary  #FF6B35   ink  #0F172A   canvas  #F8FAFC
+ *   success  #10B981   danger  #EF4444
+ * Expressed in OKLCH so tints/shades stay perceptually even.
+ */
+@theme {
+  /* Brand — sunset coral */
+  --color-brand-50: oklch(0.968 0.017 45);
+  --color-brand-100: oklch(0.93 0.04 45);
+  --color-brand-200: oklch(0.87 0.08 44);
+  --color-brand-300: oklch(0.8 0.12 43);
+  --color-brand-400: oklch(0.74 0.16 42);
+  --color-brand-500: #ff6b35; /* committed brand primary */
+  --color-brand-600: oklch(0.63 0.178 40);
+  --color-brand-700: oklch(0.54 0.15 39);
+  --color-brand-800: oklch(0.45 0.12 38);
+  --color-brand-900: oklch(0.38 0.09 38);
+
+  /* Ink — slate, tuned toward the brand's cool base (#0F172A) */
+  --color-ink-50: oklch(0.984 0.003 248);
+  --color-ink-100: oklch(0.968 0.006 248);
+  --color-ink-200: oklch(0.926 0.012 251);
+  --color-ink-300: oklch(0.868 0.019 252);
+  --color-ink-400: oklch(0.704 0.03 256);
+  --color-ink-500: oklch(0.554 0.036 257);
+  --color-ink-600: oklch(0.446 0.037 257);
+  --color-ink-700: oklch(0.372 0.039 257);
+  --color-ink-800: oklch(0.279 0.038 260);
+  --color-ink-900: oklch(0.208 0.04 265.7); /* ≈ #0F172A */
+  --color-ink-950: oklch(0.148 0.03 266);
+
+  /* Semantic surfaces */
+  --color-canvas: oklch(0.984 0.003 247.9); /* ≈ #F8FAFC */
+  --color-surface: oklch(1 0 0);
+  --color-success: oklch(0.723 0.157 163); /* ≈ #10B981 */
+  --color-danger: oklch(0.637 0.208 25.3); /* ≈ #EF4444 */
+
+  /* Type */
+  --font-display: var(--font-general-sans), var(--font-satoshi), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid display scale (clamp, ~1.25 ratio) */
+  --text-display: clamp(2.75rem, 1.6rem + 5.6vw, 5.5rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.03em;
+  --text-h1: clamp(2.25rem, 1.5rem + 3.4vw, 3.75rem);
+  --text-h1--line-height: 1.03;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: clamp(1.375rem, 1.15rem + 1vw, 1.875rem);
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.015em;
+
+  /* Motion */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Elevation — single defined shadow, no ghost-card pairing */
+  --shadow-card: 0 1px 2px oklch(0.208 0.04 265.7 / 0.04),
+    0 12px 32px -12px oklch(0.208 0.04 265.7 / 0.16);
+  --shadow-lift: 0 2px 4px oklch(0.208 0.04 265.7 / 0.06),
+    0 24px 48px -16px oklch(0.208 0.04 265.7 / 0.24);
+
+  /* Z-index scale */
+  --z-header: 50;
+  --z-drawer-backdrop: 60;
+  --z-drawer: 70;
+  --z-toast: 90;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-canvas);
+  --foreground: var(--color-ink-900);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    border-color: var(--color-ink-200);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lenis smooth scroll hooks. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    font-weight: 600;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-brand-500);
+    color: white;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

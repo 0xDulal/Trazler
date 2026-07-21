@@ -1,20 +1,42 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { generalSans, satoshi, inter } from "./fonts";
+import { SmoothScroll } from "@/components/providers/smooth-scroll";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const siteUrl = "https://trazler.com";
 
 export const metadata: Metadata = {
-  title: "Trazler - Your Travel Partner",
-  description: "Premium travel discovery and booking platform.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Trazler - Your Travel Partner",
+    template: "%s · Trazler",
+  },
+  description:
+    "Discover, compare and book handcrafted tours across the world's most extraordinary destinations. Trazler is your travel partner from first spark to safe return.",
+  keywords: [
+    "tours",
+    "travel",
+    "adventure",
+    "destinations",
+    "holiday packages",
+    "guided tours",
+  ],
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "Trazler",
+    title: "Trazler - Your Travel Partner",
+    description:
+      "Discover, compare and book handcrafted tours across the world's most extraordinary destinations.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trazler - Your Travel Partner",
+    description:
+      "Discover, compare and book handcrafted tours across the world's most extraordinary destinations.",
+  },
 };
 
 export default function RootLayout({
@@ -25,9 +47,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${generalSans.variable} ${satoshi.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col bg-canvas text-ink-900">
+        <SmoothScroll>
+          <SiteHeader />
+          <main className="flex flex-1 flex-col">{children}</main>
+          <SiteFooter />
+        </SmoothScroll>
+      </body>
     </html>
   );
 }

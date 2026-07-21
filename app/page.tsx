@@ -1,10 +1,23 @@
-export default function Home() {
+import { Hero } from "@/components/sections/hero";
+import { FeaturedTours } from "@/components/sections/featured-tours";
+import { PopularDestinations } from "@/components/sections/popular-destinations";
+import { WhyTrazler } from "@/components/sections/why-trazler";
+import { Testimonials } from "@/components/sections/testimonials";
+import { Gallery } from "@/components/sections/gallery";
+import { JournalTeaser } from "@/components/sections/journal-teaser";
+import { CtaBand } from "@/components/sections/cta-band";
+
+export default function HomePage() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
-      <h1 className="text-3xl font-semibold tracking-tight">Trazler</h1>
-      <p className="text-muted-foreground max-w-md">
-        Premium travel discovery and booking.
-      </p>
-    </main>
+    <>
+      <Hero />
+      <FeaturedTours />
+      <PopularDestinations />
+      <WhyTrazler />
+      <Testimonials />
+      <Gallery />
+      <JournalTeaser />
+      <CtaBand />
+    </>
   );
 }
